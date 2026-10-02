@@ -252,3 +252,16 @@ h2{font-size:clamp(31px,5vw,48px);line-height:1.04;margin:0 0 15px;letter-spacin
     margin-bottom:.16em;
   }
 }
+
+
+/* Correção: impede o corte de "estoque" em telas desktop */
+@media(min-width:761px){
+  .hero{
+    width:min(1180px,calc(100vw - 64px));
+  }
+  .hero .main-headline{
+    max-width:1180px;
+    font-size:clamp(40px,4.75vw,61px);
+    letter-spacing:-2.4px;
+  }
+}
