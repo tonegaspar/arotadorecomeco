@@ -265,3 +265,51 @@ h2{font-size:clamp(31px,5vw,48px);line-height:1.04;margin:0 0 15px;letter-spacin
     letter-spacing:-2.4px;
   }
 }
+
+
+/* AJUSTE EXCLUSIVO MOBILE — título mais equilibrado */
+@media(max-width:760px){
+  .hero .main-headline{
+    width:100%;
+    max-width:100%;
+    font-size:clamp(34px,9.2vw,48px);
+    line-height:1.04;
+    letter-spacing:-1.6px;
+  }
+
+  .hero .main-headline > span{
+    white-space:normal;
+  }
+
+  .hero .main-headline .headline-white{
+    margin-bottom:.20em;
+  }
+
+  /* No celular, controla exatamente as quebras visuais */
+  .hero .main-headline .headline-white{
+    font-size:0;
+  }
+  .hero .main-headline .headline-white::after{
+    content:"Aprenda a vender\A na internet";
+    white-space:pre;
+    font-size:clamp(34px,9.2vw,48px);
+  }
+
+  .hero .main-headline .headline-gold:nth-child(2){
+    font-size:0;
+  }
+  .hero .main-headline .headline-gold:nth-child(2)::after{
+    content:"sem aparecer,\A sem estoque,";
+    white-space:pre;
+    font-size:clamp(34px,9.2vw,48px);
+  }
+
+  .hero .main-headline .headline-gold:nth-child(3){
+    font-size:0;
+  }
+  .hero .main-headline .headline-gold:nth-child(3)::after{
+    content:"assim como eu aprendi";
+    white-space:pre;
+    font-size:clamp(34px,9.2vw,48px);
+  }
+}
