@@ -116,82 +116,87 @@
         fbq("track", "Lead", {content_name: "Grupo WhatsApp - A Rota pro Recomeço"});
       }
     });
-    // Botão de WhatsApp pessoal arrastável — solta exatamente onde o usuário deixar
+    // WhatsApp flutuante: clique abre o link; arraste só começa após movimento real.
     const floater = document.getElementById("whatsappFloat");
     const personalWhatsApp = document.getElementById("personalWhatsApp");
 
-    let dragState = null;
-    let didDrag = false;
+    let pointerDown = false;
+    let isDragging = false;
+    let suppressClick = false;
+    let startX = 0, startY = 0, startLeft = 0, startTop = 0;
+    const DRAG_THRESHOLD = 8;
 
-    floater.addEventListener("dragstart", e => e.preventDefault());
-
-    floater.addEventListener("pointerdown", function(e) {
-      if (e.button !== undefined && e.button !== 0) return;
-
-      const rect = floater.getBoundingClientRect();
-      dragState = {
-        pointerId: e.pointerId,
-        startX: e.clientX,
-        startY: e.clientY,
-        left: rect.left,
-        top: rect.top
-      };
-      didDrag = false;
-
-      floater.style.left = rect.left + "px";
-      floater.style.top = rect.top + "px";
-      floater.style.right = "auto";
-      floater.style.bottom = "auto";
-
-      floater.setPointerCapture(e.pointerId);
+    // Impede apenas o arraste nativo da imagem/link.
+    floater.addEventListener("dragstart", function(e) {
+      e.preventDefault();
     });
 
-    floater.addEventListener("pointermove", function(e) {
-      if (!dragState || e.pointerId !== dragState.pointerId) return;
+    floater.addEventListener("pointerdown", function(e) {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
 
-      const dx = e.clientX - dragState.startX;
-      const dy = e.clientY - dragState.startY;
+      pointerDown = true;
+      isDragging = false;
+      suppressClick = false;
 
-      if (!didDrag && Math.hypot(dx, dy) < 5) return;
-      didDrag = true;
+      const rect = floater.getBoundingClientRect();
+      startX = e.clientX;
+      startY = e.clientY;
+      startLeft = rect.left;
+      startTop = rect.top;
+    });
+
+    window.addEventListener("pointermove", function(e) {
+      if (!pointerDown) return;
+
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      if (!isDragging && Math.hypot(dx, dy) >= DRAG_THRESHOLD) {
+        isDragging = true;
+        suppressClick = true;
+
+        floater.style.left = startLeft + "px";
+        floater.style.top = startTop + "px";
+        floater.style.right = "auto";
+        floater.style.bottom = "auto";
+      }
+
+      if (!isDragging) return;
+
       e.preventDefault();
 
       const maxLeft = Math.max(8, window.innerWidth - floater.offsetWidth - 8);
       const maxTop = Math.max(8, window.innerHeight - floater.offsetHeight - 8);
 
-      floater.style.left = Math.max(8, Math.min(maxLeft, dragState.left + dx)) + "px";
-      floater.style.top = Math.max(8, Math.min(maxTop, dragState.top + dy)) + "px";
-    });
+      floater.style.left =
+        Math.max(8, Math.min(maxLeft, startLeft + dx)) + "px";
+      floater.style.top =
+        Math.max(8, Math.min(maxTop, startTop + dy)) + "px";
+    }, { passive: false });
 
-    function finishDrag(e) {
-      if (!dragState || e.pointerId !== dragState.pointerId) return;
-      if (floater.hasPointerCapture(e.pointerId)) {
-        floater.releasePointerCapture(e.pointerId);
-      }
-      dragState = null;
+    function stopPointer() {
+      pointerDown = false;
+      isDragging = false;
     }
 
-    floater.addEventListener("pointerup", finishDrag);
-    floater.addEventListener("pointercancel", finishDrag);
-    floater.addEventListener("lostpointercapture", function() {
-      dragState = null;
-    });
+    window.addEventListener("pointerup", stopPointer);
+    window.addEventListener("pointercancel", stopPointer);
 
+    // IMPORTANTE: clique normal usa o próprio href do <a>.
+    // Só bloqueamos o clique imediatamente posterior a um arraste.
     personalWhatsApp.addEventListener("click", function(e) {
-      if (didDrag) {
+      if (suppressClick) {
         e.preventDefault();
         e.stopPropagation();
-        didDrag = false;
+        suppressClick = false;
         return;
       }
 
       if (typeof fbq === "function") {
         fbq("trackCustom", "ClicouWhatsAppPessoal");
       }
-
-      // Garante a abertura do WhatsApp em clique normal.
-      e.preventDefault();
-      window.open("https://wa.me/message/YZJGV7GRVTZJA1", "_blank", "noopener,noreferrer");
+      // Não usamos preventDefault e não usamos window.open.
+      // O navegador abre diretamente o href do link.
     });
 
   </script>
