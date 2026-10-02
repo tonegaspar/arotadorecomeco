@@ -1,14 +1,14 @@
-# A Rota pro Recomeço — Landing Page
+# A Rota pro Recomeço — versão final
 
-Página estática pronta para GitHub Pages.
+Pronto para GitHub Pages.
 
-## Publicar
-1. Envie `index.html` e `style.css` para um repositório no GitHub.
-2. Em Settings > Pages, selecione a branch `main` e a pasta `/ (root)`.
-3. Salve e aguarde a publicação.
+Incluído:
+- Link principal para o grupo do WhatsApp.
+- Botão flutuante pessoal de WhatsApp com foto, mensagem e arrastar pela tela.
+- Meta Pixel ID 1623075489254434.
+- PageView automático.
+- Evento customizado `ClicouNoGrupo` + evento padrão `Lead` no clique do grupo.
+- Evento customizado `ClicouWhatsAppPessoal` no botão pessoal.
+- Logo, favicon, fundo premium e efeitos glass.
 
-## Link do grupo
-No `index.html`, encontre:
-`href="#" id="cta"`
-
-Troque `#` pelo link do seu grupo de WhatsApp, Telegram ou outra página.
+Basta enviar todos os arquivos para a raiz do repositório no GitHub.
