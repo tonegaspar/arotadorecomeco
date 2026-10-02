@@ -184,9 +184,14 @@
         didDrag = false;
         return;
       }
+
       if (typeof fbq === "function") {
         fbq("trackCustom", "ClicouWhatsAppPessoal");
       }
+
+      // Garante a abertura do WhatsApp em clique normal.
+      e.preventDefault();
+      window.open("https://wa.me/message/YZJGV7GRVTZJA1", "_blank", "noopener,noreferrer");
     });
 
   </script>
